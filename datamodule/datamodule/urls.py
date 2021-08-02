@@ -15,9 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from collector import views
 
 urlpatterns = [
+    path('collector/', include('collector.urls')),
     path('admin/', admin.site.urls),
-    path('', include('collector.urls')),
 ]
