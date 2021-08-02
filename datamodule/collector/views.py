@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import View
+from .models import Viewer
+
 import cv2 as cv
 import random
 
@@ -8,15 +10,8 @@ def index(request):
     return render(request,"index.htm")
 
 def input(request):
-    if request.method=="POST":
-        return render(request,"input.htm",{
-            "gender":request.POST.get("gender"),
-            "age":request.POST.get("age")
-        })
-    return render(request,"input.htm",{
-        "gender":"",
-        "age":""
-    })
+    viewer_instance = Viewer.objects.create(survey_age=request.POST.get("age"), survey_gender=request.POST.get("gender"))
+    return render(request, 'input.htm')
 
 def camera(request):
     runCamera()
