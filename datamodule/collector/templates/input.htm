@@ -22,7 +22,7 @@
   </nav>
 
 
-  <form class="container mt-5" method="post" action="{% url 'input' %}">
+<form class="container mt-5" method="post" action="{% url 'input' %}">
     {% csrf_token %}
     <div class="form-group">
       <label for="age">Enter your Age</label>
@@ -33,12 +33,19 @@
       <label for="gender">Enter your gender</label>
       <input type="text" class="form-control" id="gender" name="gender" placeholder="Gender" />
     </div>
-    <button type="submit" class="btn btn-dark btn-lg">Submit</button>
-  </form>
+
+    <button type="submit" class="btn btn-dark btn-lg"> Submit  </button>
+
+</form>
 
 
 
   <!-- Optional JavaScript -->
+  <!-- jQuery first, then Pop
+
+
+
+  <!- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"

@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.http import HttpResponseRedirect
 from django.views import View
 from .models import Viewer
 
@@ -10,12 +10,15 @@ def index(request):
     return render(request,"index.htm")
 
 def input(request):
-    viewer_instance = Viewer.objects.create(survey_age=request.POST.get("age"), survey_gender=request.POST.get("gender"))
+    if request.method=="POST":
+        Viewer.objects.create(survey_age=request.POST.get("age"), survey_gender=request.POST.get("gender"))   
+        return redirect('index/')
     return render(request, 'input.htm')
 
 def camera(request):
     runCamera()
     return render(request,"camera.htm")
+
 
 def runCamera():
     cap = cv.VideoCapture(0)
