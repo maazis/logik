@@ -1,55 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
 
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <title>Logik</title>
-  </head>
-  <body>
-   <nav class="navbar navbar-expand-lg navbar-light bg-dark text-center">
-      <a class="navbar-brand text-white" href="{% url 'index'%}">LOGIK</a>
-     
-      <a class="navbar-brand text-white" href="{% url 'input'%}">MANUAL INPUT</a>
-       <a class="navbar-brand text-white" href="{% url 'camera'%}">Camera</a>
-    </nav>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+  <title>Logik</title>
+</head>
 
-  
-    <div class="container mt-5">
-      <iframe width="620" height="420" src="https://www.youtube.com/embed/tgbNymZ7vqY?controls=0">
-      </iframe>
-    </div>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-dark text-center">
+    <a class="navbar-brand text-white" href="{% url 'index'%}">LOGIK</a>
+    <a class="navbar-brand text-white" href="{% url 'input'%}">MANUAL INPUT</a>
+    <a class="navbar-brand text-white" href="{% url 'camera'%}">Camera</a>
+  </nav>
 
-    
+  <div class="container mt-5">
+    <iframe id="video_embedded" class="vid" id="yt" width="620" height="420"
+      src="https://www.youtube.com/embed/tgbNymZ7vqY?controls=0">
+    </iframe>
+  </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+  <main>
+    <p> <button id="btnStart" class="btn btn-dark btn-lg">Start recording </button>
+      <button id="btnStop" class="btn btn-danger btn-lg">Stop recording</button>
+      <!-- <button id="download">download </button> -->
+    </p>
+    <video controls></video>
+    <video id="vid2" controls></video>
+  </main>
+
+
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+  <script type="text/javascript">
+
+    let constraintObj = {
+      audio: false,
+      video: {
+        facingMode: "user",
+        // width: { min: 640, ideal: 1280, max: 1920 },
+        // height: { min: 480, ideal: 720, max: 1080 } 
+      }
+    };
+    //handle older browsers that might implement getUserMedia in some way
+    if (navigator.mediaDevices === undefined) {
+      navigator.mediaDevices = {};
+      navigator.mediaDevices.getUserMedia = function (constraintObj) {
+        let getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        if (!getUserMedia) {
+          return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+        }
+        return new Promise(function (resolve, reject) {
+          getUserMedia.call(navigator, constraintObj, resolve, reject);
+        });
+      }
+    } else {
+      navigator.mediaDevices.enumerateDevices()
+        .then(devices => {
+          devices.forEach(device => {
+            console.log(device.kind.toUpperCase(), device.label);
+            //, device.deviceId
+          })
+        })
+        .catch(err => {
+          console.log(err.name, err.message);
+        })
+    }
+
+    navigator.mediaDevices.getUserMedia(constraintObj)
+      .then(function (mediaStreamObj) {
+        //connect the media stream to the first video element
+        let video = document.querySelector('video');
+        if ("srcObject" in video) {
+          video.srcObject = mediaStreamObj;
+        } else {
+          //old version
+          video.src = window.URL.createObjectURL(mediaStreamObj);
+        }
+        // video.onloadedmetadata = function (ev) {
+        //   //show in the video element what is being captured by the webcam
+        //   video.play();
+        // };
+
+        //add listeners for saving video/audio
+        let start = document.getElementById('btnStart');
+        let stop = document.getElementById('btnStop');
+        let vidSave = document.getElementById('vid2');
+        // let download = document.getElementById('download');
+        let mediaRecorder = new MediaRecorder(mediaStreamObj);
+        let chunks = [];
+
+        start.addEventListener('click', (ev) => {
+          mediaRecorder.start();
+          console.log(mediaRecorder.state);
+        });
+        stop.addEventListener('click', (ev) => {
+          mediaRecorder.stop();
+          console.log(mediaRecorder.state);
+          mediaStreamObj.getTracks()[0].stop();
+          // mediaStreamObj.getTracks()[1].stop();
+        });
+        mediaRecorder.ondataavailable = function (ev) {
+          chunks.push(ev.data);
+        }
+        mediaRecorder.onstop = (ev) => {
+          let recordedblob = new Blob(chunks, { 'type': 'video/mp4;' });
+          vidSave.src = window.URL.createObjectURL(recordedblob);
+          chunks = [];
+          // btnStop.href = vidSave.src;
+          // btnStop.download = " ";
+        }
+        // download.addEventListener('click', (ev) => {
+        //   download.href = videSave.src;
+        //   download.download = "recordedvideo.mp4";
+        // });
+      })
+      .catch(function (err) {
+        console.log(err.name, err.message);
+      });
+
+    var bucketName = kavtech - intern;
+    var bucketRegion = us - east - 1;
+    var IdentityPoolId = IDENTITY_POOL_ID;
+
+    AWS.config.update({
+      region: bucketRegion,
+      credentials: new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: IdentityPoolId
+      })
+    });
+
+    var s3 = new AWS.S3({
+      apiVersion: '2006-03-01',
+      params: { Bucket: bucketName }
+    });
+
+    function s3upload() {
+      var files = document.getElementById('vid2').files;
+      if (files) {
+        var file = files[0];
+        var fileName = file.name;
+        var filePath = 'User_video/' + fileName;
+        var fileUrl = 'https://' + bucketRegion + '.amazonaws.com/my-    first-bucket/' + filePath;
+        s3.upload({
+          Key: filePath,
+          Body: file,
+          ACL: 'public-read'
+        }, function (err, data) {
+          if (err) {
+            reject('error');
+          }
+          alert('Successfully Uploaded!');
+        }).on('httpUploadProgress', function (progress) {
+          var uploaded = parseInt((progress.loaded * 100) / progress.total);
+          $("progress").attr('value', uploaded);
+        });
+      }
+    };
+
+  </script>
+</body>
+
 </html>
