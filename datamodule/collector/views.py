@@ -4,8 +4,6 @@ from django.views import View
 from .models import Viewer
 
 import cv2 as cv
-import random
-# import boto3 from botocore.exceptions import NoCredentialsError
 
 def index(request):
     return render(request,"index.htm")
@@ -44,21 +42,3 @@ def runCamera():
     cap.release()
     out.release()
     cv.destroyAllWindows()
-
-ACCESS_KEY = 'AKIAW2LZ5RUN5LRRQE4W'
-SECRET_KEY = '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'    
-
-def upload_to_aws(local_file, bucket, s3_file):
-    s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
-                      aws_secret_access_key=SECRET_KEY)
-
-    try:
-        s3.upload_file(local_file, bucket, s3_file)
-        print("Upload Successful")
-        return True
-    except FileNotFoundError:
-        print("The file was not found")
-        return False
-    except NoCredentialsError:
-        print("Credentials not available")
-        return False

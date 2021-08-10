@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-w3h6&uaobvbxa#f-z7h(y9cv7czv1^cdm$-@4j+8z%=xlgcuc&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['34.202.158.57']
 
 
 # Application definition
@@ -130,12 +130,3 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AWS_ACCESS_KEY_ID = 'AKIAW2LZ5RUN5LRRQE4W'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'kavtech-intern'
-AWS_S3_SIGNATURE_VERSION = 's3v4'
-AWS_S3_REGION_NAME =  'us-east-1'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-AWS_S3_VERIFY = True
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
