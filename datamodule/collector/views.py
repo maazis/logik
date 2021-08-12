@@ -4,13 +4,14 @@ from django.views import View
 from .models import Viewer
 
 import cv2 as cv
+import random
 
 def index(request):
     return render(request,"index.htm")
 
 def input(request):
     if request.method=="POST":
-        Viewer.objects.create(survey_age=request.POST.get("age"), survey_gender=request.POST.get("gender") ,survey_name=request.POST.get("name"))   
+        Viewer.objects.create(survey_age=request.POST.get("age"), survey_gender=request.POST.get("gender") ,survey_name=request.POST.get("name"))  
         return redirect('index/')
     return render(request, 'input.htm')
 
