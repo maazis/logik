@@ -6,3 +6,7 @@ class Viewer(models.Model):
     survey_age = models.FloatField(null=False, blank=False)
     survey_gender = models.CharField(max_length=15, null=False, blank=False)
     survey_name=models.CharField(max_length=50,null=False, blank=True )
+
+class Tags(models.Model):
+    timestap=models.FloatField(null=False, blank=False)
+    emotion=models.CharField(max_length=20, null=False, blank=False)
